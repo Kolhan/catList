@@ -3,6 +3,7 @@ let modal = document.querySelector('.info-block')
 
 let catList = []
 
+//создаём карточки котов
 function createCards(arr) {
     
     for (let index = 0; index < arr.length; index++) {
@@ -49,6 +50,7 @@ function createCards(arr) {
     }
 }
 
+//клик по карточке
 function onClick(index) {
     const cat = catList[index];
     
@@ -67,16 +69,16 @@ function onClick(index) {
     modal.classList.add('active')
 }
 
+//закрыть окно
 function closeInfo() {
     modal.classList.remove('active')
 }
 
-
+//отправляем зпрос
 fetch(`https://sb-cats.herokuapp.com/api/show`).then((dataResult) => {
     dataResult.json().then((result) => {
-        console.log(result)
-        catList = result.data
-        createCards(result.data)
+        catList = result.data //использую в onClick
+        createCards(catList)
     })
 })
 
