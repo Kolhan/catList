@@ -8,7 +8,27 @@ function createCards(arr) {
     
     for (let index = 0; index < arr.length; index++) {
         const cat = arr[index]
-        // console.log(cat)
+
+        //Если у кота нет имени 
+        if (cat.name == undefined || cat.name == '') {
+            cat.name = `<Бродячий котЭ>`
+        }
+
+        //Если у кота нет возраста 
+        if (cat.age == undefined || cat.age == '') {
+            cat.age = `<никто не знает возраст>`
+        } else cat.age =  cat.age + ' год'
+
+        //Если картинка отстуствует ставим по умолчанию
+        if (cat.img_link == undefined || cat.img_link == '') {
+            cat.img_link = `https://www.pngitem.com/pimgs/m/173-1730291_black-cat-black-and-animal-shadow-clipart-of.png`
+        }
+
+        //Если описание отстуствует ставим по умолчанию
+        if (cat.description == undefined || cat.description == '') {
+            cat.description = `<не описуемой красоты>`
+        }
+
 
         let card = document.createElement('div')
         card.className ='card'
@@ -50,6 +70,8 @@ function createCards(arr) {
     }
 }
 
+
+
 //клик по карточке
 function onClick(index) {
     const cat = catList[index];
@@ -61,7 +83,7 @@ function onClick(index) {
     h2.innerText = cat.name
 
     let h3 = document.querySelector('.information h3')
-    h3.innerText = cat.age + ' год'
+    h3.innerText = cat.age
 
     let p = document.querySelector('.information p')
     p.innerText = cat.description
