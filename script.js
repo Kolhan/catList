@@ -9,10 +9,8 @@ function createCards(arr) {
     for (let index = 0; index < arr.length; index++) {
         const cat = arr[index]
 
-        //Если у кота нет имени 
-        if (cat.name == undefined || cat.name == '') {
-            cat.name = `<Бродячий котЭ>`
-        }
+        //Если у кота нет имени, то его не существует (кот Шрёдингера, в базе есть, а данные не заполнены), пропускаем такого
+        if (cat.name == undefined || cat.name == '') continue
 
         //Если у кота нет возраста 
         if (cat.age == undefined || cat.age == '') {
