@@ -7,12 +7,22 @@
     <title>CatList</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
 </head>
 <body>
     <header class="container">
         <img class="logo-img" src="img/cat-fill.svg" alt="Бабуленькины котики">
-        <span class="logo-text">Бабуленькины котики</span>
+        <div class="header__rightBlock">
+            <span class="logo-text">Приют 'Бабуленькины котики'</span>
+            <button class="btn__auth">Авторизоваться</button>
+        </div>
+        
     </header>
+
+    <div class="menu">
+        <button class="btn__newCat">Новый кот</button>
+        <button class="btn__refreshCatList">Обновить список</button>
+    </div>
 
     <main class="container"></main>
 
@@ -30,6 +40,7 @@
         </div>
     </div>
 
+    
     <script src="script.js"></script>
 </body>
 </html>

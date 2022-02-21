@@ -1,3 +1,7 @@
+let user = Cookies.get('user')
+//Дорисовываем кнопки для админа
+renderUI(Boolean(user))
+
 let main = document.querySelector('main')
 let modal = document.querySelector('.info-block')
 
@@ -5,6 +9,8 @@ let catList = []
 
 //создаём карточки котов
 function createCards(arr) {
+
+    main.innerHTML = ''
     
     for (let index = 0; index < arr.length; index++) {
         const cat = arr[index]
@@ -68,8 +74,6 @@ function createCards(arr) {
     }
 }
 
-
-
 //клик по карточке
 function onClick(index) {
     const cat = catList[index];
@@ -94,12 +98,59 @@ function closeInfo() {
     modal.classList.remove('active')
 }
 
-//отправляем зпрос
-fetch(`https://sb-cats.herokuapp.com/api/show`).then((dataResult) => {
-    dataResult.json().then((result) => {
-        catList = result.data //использую в onClick
-        createCards(catList)
+//запрос списка котов с сервера
+function getCatListFromServer() {
+    fetch(`https://sb-cats.herokuapp.com/api/show`).then((dataResult) => {
+        dataResult.json().then((result) => {
+            catList = result.data //использую в onClick
+            // сохраняем результат в localStorage
+            window.localStorage.catList = JSON.stringify(catList)
+            createCards(catList) // рисуем карточки
+        })
     })
+}
+
+
+
+// проверка наличия сохраняённой локальной копии
+if (window.localStorage.catList == undefined) {
+    //отправляем запрос
+    getCatListFromServer()
+} else {
+    // загружаем из localStorage
+    catList = JSON.parse(window.localStorage.catList)           
+    createCards(catList) // рисуем карточки
+}
+
+// перерисовка по авторизации
+function renderUI(isLogin) {
+    let btnLogin = document.querySelector('.btn__auth') 
+    if (isLogin) { 
+        btnLogin.innerText = 'Выйти'
+    } else { 
+        btnLogin.innerText = 'Авторизоваться' 
+    }
+}
+
+// кнопка авторизации
+let btnLogin = document.querySelector('.btn__auth') 
+btnLogin.addEventListener('click', (e) => {
+    if (!user) {
+        Cookies.set('user', 'админ', {secure: true, samesite: 'lax'})
+    } else {
+        Cookies.remove('user')
+    }
+    user = Cookies.get('user')
+    renderUI(Boolean(user))
 })
+
+// кнопка обновить список
+let btnRefreshCatList = document.querySelector('.btn__refreshCatList') 
+btnRefreshCatList.addEventListener('click', (e) => {
+    getCatListFromServer()
+})
+
+
+
 
 
