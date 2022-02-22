@@ -45,15 +45,20 @@ main.container {
 }
 
 .menu {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     padding: 30px calc(50% - 500px);
+    gap: 50px;
+}
+
+.btn__refreshCatList {
+    grid-column-start: 3;
+    grid-column-end: 4;
 }
 
 button {
-    height: 40px;
-    width: 300px;
+    min-height: 40px;
+    width: 100%;
     font-size: 22px;
     background-color: white;
     border: 1px solid gray;
@@ -169,3 +174,25 @@ footer {
     margin-bottom: 30px;
 }
 
+.hide {
+    display: none;
+}
+
+.modal_add_style {
+    width: 300px;
+    grid-template-columns: 1fr;
+}
+
+input, textarea {
+    width: calc(100% - 15px);
+    font-size: 16px;
+    padding: 5px;
+    margin: 5px 0px;
+}
+
+input[type='checkbox'] {
+    display: inline-block;
+    margin: 0px;
+    padding: 0px;
+    width: auto;
+}

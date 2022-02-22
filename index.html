@@ -28,19 +28,41 @@
 
     <footer class="container">©2022 All rights reserved</footer>
 
-    <div class="info-block">
+    <div id='modal_info' class="info-block">
         <div class="info-wrapper">
-            <img class="info-img" src="" alt="Риш">
+            <img class="info-img" src="" alt="изображение кота">
             <div class="information">
-                <h2>Риш</h2>
-                <h3>1 год</h3>
-                <p>Риш любит лесенки, канаты. Очень активный и дружелюбный кот. Риш полностью здоров, привит, кастрирован. Использует лоточек и очень аккуратен.</p>
+                <h2>имя</h2>
+                <h3>возраст</h3>
+                <p>описание</p>
             </div>
-            <div class="info-close" onclick="closeInfo()"></div>
+            <div class="info-close" onclick="closeInfo(event)"></div>
         </div>
     </div>
 
-    
+    <div id='modal_add' class="info-block">
+
+        <div class="info-wrapper modal_add_style">
+            <div class="information">
+                <div class="title">Добавить кота</div><br>
+                <form id="addCat">
+                    <input class="input-form" name="name" placeholder="имя" required>
+                    <input class="input-form" name="age" type="number" placeholder="возраст" min="1" max="100">
+                    <input class="input-form" name="img_link" placeholder="ссылка на изображение">
+                    <label><input type="checkbox" name="favourite" value="true" class="input-form"> любимчик</label>
+                    <input class="input-form" name="rate" type="number" placeholder="рейтинг" min="1" max="10">
+                    <textarea class="input-form" name="description" placeholder="описание"></textarea>
+                    <br><br>
+                    <button type="submit">Добавить</button>
+                </form>
+
+            </div>
+            
+            <div class="info-close" onclick="closeInfo(event)"></div>
+        </div>    
+    </div>
+
+    <script src="Api.js" defer></script>
     <script src="script.js"></script>
 </body>
 </html>

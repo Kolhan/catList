@@ -1,11 +1,11 @@
+let catList = []
 let user = Cookies.get('user')
-//Дорисовываем кнопки для админа
-renderUI(Boolean(user))
 
 let main = document.querySelector('main')
-let modal = document.querySelector('.info-block')
 
-let catList = []
+
+//Дорисовываем кнопки для админа
+renderUI(Boolean(user))
 
 //создаём карточки котов
 function createCards(arr) {
@@ -39,7 +39,7 @@ function createCards(arr) {
         card.id = index
         main.append(card)
 
-        card.addEventListener('click', () => { onClick(index); } )
+        card.addEventListener('click', () => { openModalInfo(index); } )
     
         // Картинка
         let imgCard = document.createElement('img')
@@ -70,12 +70,33 @@ function createCards(arr) {
             }
             p.append(img)
         }
+
+        // Кнопка удалить
+        if (user) {
+            let btnDel = document.createElement('button')
+            btnDel.innerHTML = 'удалить'
+            btnDel.id = index
+            card.append(btnDel)
+
+            btnDel.onclick = function(event) {
+                let index = event.target.id
+                let resultConfirm = confirm(`Действительно хочешь удалить кота ${catList[index].name}?`)    
+                if (resultConfirm) {
+                    delCat(index)
+                }
+
+                event.stopPropagation()
+            };
+        }
+
     
     }
 }
 
 //клик по карточке
-function onClick(index) {
+function openModalInfo(index) {
+    let modal = document.querySelector('#modal_info')
+
     const cat = catList[index];
     
     let infoImg = document.querySelector('.info-img')
@@ -93,9 +114,18 @@ function onClick(index) {
     modal.classList.add('active')
 }
 
+function openModalAdd() {
+    let modal = document.querySelector('#modal_add')
+
+
+
+    modal.classList.add('active')
+}
+
 //закрыть окно
-function closeInfo() {
-    modal.classList.remove('active')
+function closeInfo(e) {    
+    let _elm = e.path[2]
+    _elm.classList.remove('active')
 }
 
 //запрос списка котов с сервера
@@ -108,6 +138,28 @@ function getCatListFromServer() {
             createCards(catList) // рисуем карточки
         })
     })
+}
+
+//запрос на удаление кота с сервера
+function delCat(index) {
+    let cat = catList[index]
+    console.log(cat);
+
+    if  (user) {
+        catList.splice(index, 1);
+        createCards(catList) // рисуем карточки
+
+        // fetch(`https://sb-cats.herokuapp.com/api/delete/${cat.id}`).then((dataResult) => {
+        //     dataResult.json().then((result) => {
+        //         catList.splice(index, 1);
+        //         // catList = result.data //использую в onClick
+        //         // сохраняем результат в localStorage
+        //         window.localStorage.catList = JSON.stringify(catList)
+        //         createCards(catList) // рисуем карточки
+        //     })
+        // })
+    } else { alert('Операция запрещена для не авторизованного пользователя') }
+
 }
 
 
@@ -125,11 +177,16 @@ if (window.localStorage.catList == undefined) {
 // перерисовка по авторизации
 function renderUI(isLogin) {
     let btnLogin = document.querySelector('.btn__auth') 
+    let btnNewCat = document.querySelector('.btn__newCat')
     if (isLogin) { 
         btnLogin.innerText = 'Выйти'
+        btnNewCat.classList.remove('hide')
     } else { 
         btnLogin.innerText = 'Авторизоваться' 
+        btnNewCat.classList.add('hide')
     }
+
+    createCards(catList)
 }
 
 // кнопка авторизации
@@ -149,6 +206,36 @@ let btnRefreshCatList = document.querySelector('.btn__refreshCatList')
 btnRefreshCatList.addEventListener('click', (e) => {
     getCatListFromServer()
 })
+
+let btnNewCat = document.querySelector('.btn__newCat') 
+btnNewCat.addEventListener('click', (e) => { openModalAdd(); } )
+
+
+const form = document.querySelector('#addCat');
+const inputs = document.querySelectorAll('.input-form');
+form.addEventListener('submit', (e)=> {
+    e.preventDefault();
+    const bodyJSON = {};
+    inputs.forEach((input) => {
+        if (input.name === 'favourite') {
+            bodyJSON[input.name] = input.checked;
+        } else {
+            bodyJSON[input.name] = input.value;
+        }
+    })
+
+    
+    api.addCat(bodyJSON).then(data =>{
+        if(data.message !== 'ok') {
+          alert('Невозможно создать кота')  
+        } else {
+          localStorage.clear();
+          getAllCats()
+        }
+        
+    })
+})
+
 
 
 
