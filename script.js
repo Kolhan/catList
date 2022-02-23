@@ -1,5 +1,6 @@
 let catList = []
 let user = Cookies.get('user')
+let localStorage = window.localStorage
 
 let main = document.querySelector('main')
 
@@ -134,7 +135,7 @@ function getCatListFromServer() {
         dataResult.json().then((result) => {
             catList = result.data //использую в onClick
             // сохраняем результат в localStorage
-            window.localStorage.catList = JSON.stringify(catList)
+            localStorage.catList = JSON.stringify(catList)
             createCards(catList) // рисуем карточки
         })
     })
@@ -146,18 +147,16 @@ function delCat(index) {
     console.log(cat);
 
     if  (user) {
-        catList.splice(index, 1);
-        createCards(catList) // рисуем карточки
+        // catList.splice(index, 1);
+        // createCards(catList) // рисуем карточки
 
-        // fetch(`https://sb-cats.herokuapp.com/api/delete/${cat.id}`).then((dataResult) => {
-        //     dataResult.json().then((result) => {
-        //         catList.splice(index, 1);
-        //         // catList = result.data //использую в onClick
-        //         // сохраняем результат в localStorage
-        //         window.localStorage.catList = JSON.stringify(catList)
-        //         createCards(catList) // рисуем карточки
-        //     })
-        // })
+        api.deleteCat(cat.id).then(result =>{
+            catList.splice(index, 1);
+            // catList = result.data //использую в onClick
+            // сохраняем результат в localStorage
+            localStorage.catList = JSON.stringify(catList)
+            createCards(catList) // рисуем карточки
+        })
     } else { alert('Операция запрещена для не авторизованного пользователя') }
 
 }
@@ -210,7 +209,7 @@ btnRefreshCatList.addEventListener('click', (e) => {
 let btnNewCat = document.querySelector('.btn__newCat') 
 btnNewCat.addEventListener('click', (e) => { openModalAdd(); } )
 
-
+//кнопка добавить нового кота
 const form = document.querySelector('#addCat');
 const inputs = document.querySelectorAll('.input-form');
 form.addEventListener('submit', (e)=> {
@@ -224,18 +223,36 @@ form.addEventListener('submit', (e)=> {
         }
     })
 
-    
+    let id = getNextId()
+    console.log(id);
+
+    bodyJSON['id'] = id;
+
     api.addCat(bodyJSON).then(data =>{
         if(data.message !== 'ok') {
-          alert('Невозможно создать кота')  
+            alert('Невозможно создать кота')
         } else {
-          localStorage.clear();
-          getAllCats()
+            localStorage.clear();
+            getCatListFromServer()
+            createCards(catList)
+
+            e.target.reset()
+            let modal = document.querySelector('#modal_add')
+            modal.classList.remove('active')
         }
-        
     })
 })
 
+//вычисляем следующий id
+function getNextId() {
+    let result  = 0
+    catList.map((elm) => {
+        if  (elm.id != undefined) {
+            if (elm.id>result) result = elm.id
+        }
+    })
+    return result + 1
+} 
 
 
 

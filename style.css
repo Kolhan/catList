@@ -45,10 +45,11 @@ main.container {
 }
 
 .menu {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
     padding: 30px calc(50% - 500px);
-    gap: 50px;
+    gap: 10px;
+    justify-content: space-around;
+    margin: 0px 40px;
 }
 
 .btn__refreshCatList {
