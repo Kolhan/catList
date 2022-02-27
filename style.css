@@ -57,6 +57,10 @@ main.container {
     grid-column-end: 4;
 }
 
+.btn_card {
+    display: flex;
+}
+
 button {
     min-height: 40px;
     width: 100%;
@@ -196,4 +200,8 @@ input[type='checkbox'] {
     margin: 0px;
     padding: 0px;
     width: auto;
+}
+
+textarea {
+    height: 130px;
 }

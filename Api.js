@@ -3,9 +3,9 @@ const onError = (response) => {
         return response.json()
     }
     return Promise.reject({
-                        message: 'Сервер не доступен',
-                        error: response
-                        })
+        message: 'Сервер не доступен',
+        error: response
+    })
 }
 
 class Api {

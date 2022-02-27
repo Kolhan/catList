@@ -22,7 +22,7 @@ function createCards(arr) {
         //Если у кота нет возраста 
         if (cat.age == undefined || cat.age == '') {
             cat.age = `<никто не знает возраст>`
-        } else cat.age =  cat.age + ' год'
+        } 
 
         //Если картинка отстуствует ставим по умолчанию
         if (cat.img_link == undefined || cat.img_link == '') {
@@ -50,7 +50,7 @@ function createCards(arr) {
     
         // Имя
         let h3 = document.createElement('h3')
-        h3.innerText = cat.name
+        h3.innerHTML = cat.name + (cat.favourite?` &#10084;`:'')
         card.append(h3)
     
         // Рейтинг
@@ -72,25 +72,56 @@ function createCards(arr) {
             p.append(img)
         }
 
-        // Кнопка удалить
         if (user) {
+            //панель с конками
+            let btnCard = document.createElement('div')
+            btnCard.className = 'btn_card'
+            card.append(btnCard)
+
+            // Кнопка удалить
             let btnDel = document.createElement('button')
             btnDel.innerHTML = 'удалить'
             btnDel.id = index
-            card.append(btnDel)
+            btnCard.append(btnDel)
 
             btnDel.onclick = function(event) {
                 let index = event.target.id
-                let resultConfirm = confirm(`Действительно хочешь удалить кота ${catList[index].name}?`)    
+                let resultConfirm = confirm(`Действительно хочешь удалить кота ${catList[index].name}?`)
                 if (resultConfirm) {
                     delCat(index)
                 }
 
                 event.stopPropagation()
             };
+
+            // Кнопка изменить
+            let btnUpd = document.createElement('button')
+            btnUpd.innerHTML = 'изменить'
+            btnUpd.id = index
+            btnCard.append(btnUpd)
+
+            btnUpd.onclick = function(event) {
+                let index = event.target.id
+
+                //заполняем окно для редактирования
+                let modal = document.querySelector('#modal_upd')
+
+                const inputs = modal.querySelectorAll('.input-form')
+                inputs.forEach(input => {
+                    if (input.name === 'favourite') {
+                        input.checked = (catList[index])[input.name];
+                    } else {
+                        input.value = (catList[index])[input.name]
+                    }
+                })
+                
+                modal.classList.add('active')
+
+                event.stopPropagation()
+            };
         }
 
-    
+
     }
 }
 
@@ -107,7 +138,7 @@ function openModalInfo(index) {
     h2.innerText = cat.name
 
     let h3 = document.querySelector('.information h3')
-    h3.innerText = cat.age
+    h3.innerText = cat.age + ' год'
 
     let p = document.querySelector('.information p')
     p.innerText = cat.description
@@ -118,14 +149,12 @@ function openModalInfo(index) {
 function openModalAdd() {
     let modal = document.querySelector('#modal_add')
 
-
-
     modal.classList.add('active')
 }
 
 //закрыть окно
 function closeInfo(e) {    
-    let _elm = e.path[2]
+    let _elm = e.target.closest('.info-block') //ищем нужного родителя среди всех родителей
     _elm.classList.remove('active')
 }
 
@@ -210,12 +239,12 @@ let btnNewCat = document.querySelector('.btn__newCat')
 btnNewCat.addEventListener('click', (e) => { openModalAdd(); } )
 
 //кнопка добавить нового кота
-const form = document.querySelector('#addCat');
-const inputs = document.querySelectorAll('.input-form');
-form.addEventListener('submit', (e)=> {
+const formAdd = document.querySelector('#addCat');
+const inputsAdd = formAdd.querySelectorAll('.input-form');
+formAdd.addEventListener('submit', (e)=> {
     e.preventDefault();
     const bodyJSON = {};
-    inputs.forEach((input) => {
+    inputsAdd.forEach((input) => {
         if (input.name === 'favourite') {
             bodyJSON[input.name] = input.checked;
         } else {
@@ -238,6 +267,40 @@ form.addEventListener('submit', (e)=> {
 
             e.target.reset()
             let modal = document.querySelector('#modal_add')
+            modal.classList.remove('active')
+        }
+    })
+})
+
+//кнопка изменить кота
+const formUpd = document.querySelector('#updCat');
+const inputsUpd = formUpd.querySelectorAll('.input-form');
+formUpd.addEventListener('submit', (e)=> {
+    e.preventDefault();
+    const bodyJSON = {};
+    inputsUpd.forEach((input) => {
+        if (input.name === 'favourite') {
+            bodyJSON[input.name] = input.checked;
+        } else {
+            bodyJSON[input.name] = input.value;
+        }
+    })
+
+    // let id = getNextId()
+    // console.log(id);
+
+    // bodyJSON['id'] = id;
+
+    api.updateCat(bodyJSON.id, bodyJSON).then(data =>{
+        if(data.message !== 'ok') {
+            alert('Невозможно изменить кота')
+        } else {
+            localStorage.clear();
+            getCatListFromServer()
+            createCards(catList)
+
+            e.target.reset()
+            let modal = document.querySelector('#modal_upd')
             modal.classList.remove('active')
         }
     })

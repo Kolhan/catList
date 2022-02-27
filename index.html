@@ -16,7 +16,6 @@
             <span class="logo-text">Приют 'Бабуленькины котики'</span>
             <button class="btn__auth">Авторизоваться</button>
         </div>
-        
     </header>
 
     <div class="menu">
@@ -28,6 +27,9 @@
 
     <footer class="container">©2022 All rights reserved</footer>
 
+
+
+    <!-- Окно с информацие о коте -->
     <div id='modal_info' class="info-block">
         <div class="info-wrapper">
             <img class="info-img" src="" alt="изображение кота">
@@ -38,8 +40,11 @@
             </div>
             <div class="info-close" onclick="closeInfo(event)"></div>
         </div>
+
+        
     </div>
 
+    <!-- Окно добавления котика -->
     <div id='modal_add' class="info-block">
 
         <div class="info-wrapper modal_add_style">
@@ -59,7 +64,31 @@
             </div>
             
             <div class="info-close" onclick="closeInfo(event)"></div>
-        </div>    
+        </div>
+    </div>
+
+    <!-- Окно изменения котика -->
+    <div id='modal_upd' class="info-block">
+
+        <div class="info-wrapper modal_add_style">
+            <div class="information">
+                <div class="title">Изменить кота</div><br>
+                <form id="updCat">
+                    <input class="input-form" name="id" placeholder="id" required disabled>
+                    <input class="input-form" name="name" placeholder="имя" required>
+                    <input class="input-form" name="age" type="number" placeholder="возраст" min="1" max="100">
+                    <input class="input-form" name="img_link" placeholder="ссылка на изображение">
+                    <label><input type="checkbox" name="favourite" value="true" class="input-form"> любимчик</label>
+                    <input class="input-form" name="rate" type="number" placeholder="рейтинг" min="1" max="10">
+                    <textarea class="input-form" name="description" placeholder="описание"></textarea>
+                    <br><br>
+                    <button type="submit">Изменить</button>
+                </form>
+
+            </div>
+            
+            <div class="info-close" onclick="closeInfo(event)"></div>
+        </div>
     </div>
 
     <script src="Api.js" defer></script>
